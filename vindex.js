@@ -1,8 +1,9 @@
+console.log("This is working!");
 (function () {
-    var myConnector = tableau.makeConnector();
-
-    myConnector.getSchema = function (schemaCallback) {
-        var cols = [{
+  var myConnector = tableau.makeConnector();
+  myConnector.getSchema = function (schemaCallback) {
+    const covidCols = [
+        {
             id: "externalId",
             dataType: tableau.dataTypeEnum.string
         }, {
@@ -112,27 +113,25 @@
         id: "actualEndDate",
         alias: "actualEndDate",
         dataType: tableau.dataTypeEnum.datetime
-    },];
-    
-        var tableSchema = {
-            id: "VisiLean",
-            alias: "Visilean construction managment data",
-            columns: cols
-        };
-    
-        schemaCallback([tableSchema]);
+    },
+    ];
+    let covidTableSchema = {
+      id: "RIVM",
+      alias: "Dutch Corona Cases since start",
+      columns: covidCols,
     };
-
-    myConnector.getData = function (table, doneCallback) {
-
-        $.getJSON("https://go.visilean.com/VisileanAPI/resource/powerBi/getData/B437C721-D701-60F1-B60D-A07E5336867C/f67057fd96e8b8f3bce78dc6a684e2eb/visilean", function(resp) {
-        var feat = resp.features,
-            tableData = [];
-
+    schemaCallback([covidTableSchema]);
+  };
+  myConnector.getData = function (table, doneCallback) {
+    let tableData = [];
+    var i = 0;
+    $.getJSON(
+      "https://go.visilean.com/VisileanAPI/resource/powerBi/getData/B437C721-D701-60F1-B60D-A07E5336867C/f67057fd96e8b8f3bce78dc6a684e2eb/visilean",
+      function (resp) {
         // Iterate over the JSON object
-        for (var i = 0, len = feat.length; i < len; i++) {
-            tableData.push({
-                "externalId": feat[i].externalId,
+        for (i = 0, len = resp.length; i < len; i++) {
+          tableData.push({
+            "externalId": feat[i].externalId,
                 "organisation": feat[i].organisation,
                 "owner": feat[i].owner,
                 "parent": feat[i].parent,
@@ -158,19 +157,17 @@
                 "notes": feat[i].notes,
                 "totalPlannedWorkers": feat[i].totalPlannedWorkers,
                 "totalActualWorkers": feat[i].totalActualWorkers
-            });
+          });
         }
-
         table.appendRows(tableData);
         doneCallback();
-    });
-    };
-
-    tableau.registerConnector(myConnector);
-    $(document).ready(function () {
-        $("#submitButton").click(function () {
-            tableau.connectionName = "VisiLean Details";
-            tableau.submit();
-        });
-    });
+      }
+    );
+  };
+  tableau.registerConnector(myConnector);
 })();
+document.querySelector("#getData").addEventListener("click", getData);
+function getData() {
+  tableau.connectionName = "Dutch Corona Numbers";
+  tableau.submit();
+}

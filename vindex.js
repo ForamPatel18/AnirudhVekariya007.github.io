@@ -1,6 +1,7 @@
 console.log("This is working!");
 (function () {
   var myConnector = tableau.makeConnector();
+
   myConnector.getSchema = function (schemaCallback) {
     const covidCols = [
         {
@@ -115,48 +116,52 @@ console.log("This is working!");
         dataType: tableau.dataTypeEnum.datetime
     },
     ];
+
     let covidTableSchema = {
       id: "RIVM",
       alias: "Dutch Corona Cases since start",
       columns: covidCols,
     };
+
     schemaCallback([covidTableSchema]);
   };
+
   myConnector.getData = function (table, doneCallback) {
     let tableData = [];
     var i = 0;
+
     $.getJSON(
       "https://go.visilean.com/VisileanAPI/resource/powerBi/getData/B437C721-D701-60F1-B60D-A07E5336867C/f67057fd96e8b8f3bce78dc6a684e2eb/visilean",
       function (resp) {
         // Iterate over the JSON object
         for (i = 0, len = resp.length; i < len; i++) {
           tableData.push({
-            "externalId": feat[i].externalId,
-                "organisation": feat[i].organisation,
-                "owner": feat[i].owner,
-                "parent": feat[i].parent,
-                "taskName": feat[i].taskName,
-                "status": feat[i].status,
-                "location": feat[i].location,
-                "trade": feat[i].trade,
-                "totalQuantity": feat[i].totalQuantity,
-                "actualQuantity": feat[i].actualQuantity,
-                "quantityUnits": feat[i].quantityUnits,
-                "percentComplete": feat[i].percentComplete,
-                "baselineStartDate": feat[i].baselineStartDate,
-                "baselineEndDate": feat[i].baselineEndDate,
-                "plannedStartDate": feat[i].plannedStartDate,
-                "actualStartDate": feat[i].actualStartDate,
-                "plannedEndDate": feat[i].plannedEndDate,
-                "actualEndDate": feat[i].actualEndDate,
-                "plannedDuration": feat[i].plannedDuration,
-                "actualDuration": feat[i].actualDuration,
-                "baselineDuration": feat[i].baselineDuration,
-                "taskType": feat[i].taskType,
-                "description": feat[i].description,
-                "notes": feat[i].notes,
-                "totalPlannedWorkers": feat[i].totalPlannedWorkers,
-                "totalActualWorkers": feat[i].totalActualWorkers
+                "externalId": resp[i].externalId,
+                "organisation": resp[i].organisation,
+                "owner": resp[i].owner,
+                "parent": resp[i].parent,
+                "taskName": resp[i].taskName,
+                "status": resp[i].status,
+                "location": resp[i].location,
+                "trade": resp[i].trade,
+                "totalQuantity": resp[i].totalQuantity,
+                "actualQuantity": resp[i].actualQuantity,
+                "quantityUnits": resp[i].quantityUnits,
+                "percentComplete": resp[i].percentComplete,
+                "baselineStartDate": resp[i].baselineStartDate,
+                "baselineEndDate": resp[i].baselineEndDate,
+                "plannedStartDate": resp[i].plannedStartDate,
+                "actualStartDate": resp[i].actualStartDate,
+                "plannedEndDate": resp[i].plannedEndDate,
+                "actualEndDate": resp[i].actualEndDate,
+                "plannedDuration": resp[i].plannedDuration,
+                "actualDuration": resp[i].actualDuration,
+                "baselineDuration": resp[i].baselineDuration,
+                "taskType": resp[i].taskType,
+                "description": resp[i].description,
+                "notes": resp[i].notes,
+                "totalPlannedWorkers": resp[i].totalPlannedWorkers,
+                "totalActualWorkers": resp[i].totalActualWorkers
           });
         }
         table.appendRows(tableData);
@@ -164,9 +169,12 @@ console.log("This is working!");
       }
     );
   };
+
   tableau.registerConnector(myConnector);
 })();
-document.querySelector("#getData").addEventListener("click", getData);
+
+
+
 function getData() {
   tableau.connectionName = "Dutch Corona Numbers";
   tableau.submit();

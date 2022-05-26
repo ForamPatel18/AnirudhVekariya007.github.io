@@ -125,7 +125,7 @@
 
     myConnector.getData = function (table, doneCallback) {
 
-        $.getJSON("https://go.visilean.com/VisileanAPI/resource/powerBi/getData/E6D7274D-14D3-B4E3-946A-62631A8CA440/6174943a8e6b34d27e9463d306aa6e22/visilean", function(resp) {
+        $.getJSON("https://go.visilean.com/VisileanAPI/resource/powerBi/getData/B437C721-D701-60F1-B60D-A07E5336867C/f67057fd96e8b8f3bce78dc6a684e2eb/visilean", function(resp) {
         var feat = resp.features,
             tableData = [];
 
